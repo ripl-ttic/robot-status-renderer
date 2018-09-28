@@ -9,7 +9,7 @@ set(REQUIRED_LIBS bot2-vis lcmtypes_robot-status)
 
 pods_use_pkg_config_packages(robot-status-renderer ${REQUIRED_LIBS})
 
-pods_install_headers(renderer_robot-status.h DESTINATION
+pods_install_headers(renderer_robot_status.h DESTINATION
                      robot-status_renderer)
 
 pods_install_libraries(robot-status-renderer)
