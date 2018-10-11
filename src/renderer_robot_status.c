@@ -24,7 +24,7 @@
 #include <bot_param/param_client.h>
 
 #include <lcmtypes/ripl_velocity_msg_t.h>
-#include <lcmtypes/ripl_robot_status_t.h>
+#include <lcmtypes/rslcm_robot_status_t.h>
 #include <lcmtypes/ripl_raw_odometry_msg_t.h>
 
 #define PARAM_NAME_GRAPH_TIMESPAN "Time span"
@@ -54,7 +54,7 @@ struct _RendererRobotStatus {
     BotGlScrollPlot2d *trans_vel_plot;
     BotGlScrollPlot2d *rot_vel_plot;
 
-    ripl_robot_status_t *robot_status;
+    rslcm_robot_status_t *robot_status;
 
     int64_t  vel_cmd_utime_last;
     uint64_t max_utime;
@@ -78,12 +78,12 @@ update_xaxis (RendererRobotStatus *self, uint64_t utime)
 
 static void
 on_robot_status (const lcm_recv_buf_t * buf, const char *channel,
-                 const ripl_robot_status_t *msg, void *user_data)
+                 const rslcm_robot_status_t *msg, void *user_data)
 {
     RendererRobotStatus *self = (RendererRobotStatus*) user_data;
     if (self->robot_status)
-        ripl_robot_status_t_destroy (self->robot_status);
-    self->robot_status = ripl_robot_status_t_copy (msg);
+        rslcm_robot_status_t_destroy (self->robot_status);
+    self->robot_status = rslcm_robot_status_t_copy (msg);
 }
 
 
@@ -276,7 +276,7 @@ robot_status_free (BotRenderer *renderer)
 {
     RendererRobotStatus *self = (RendererRobotStatus*) renderer;
     if (self->robot_status)
-        ripl_robot_status_t_destroy (self->robot_status);
+        rslcm_robot_status_t_destroy (self->robot_status);
 
     if (self)
         free (self);
@@ -377,7 +377,7 @@ BotRenderer *renderer_robot_status_new (BotViewer *viewer, BotParam *param)
     ripl_raw_odometry_msg_t_subscribe (self->lcm, "ODOMETRY", on_raw_odometry_msg, self);
     //ripl_velocity_msg_t_subscribe (self->lcm, "ROBOT_VELOCITY_STATUS", on_velocity_msg, self);
     ripl_velocity_msg_t_subscribe (self->lcm, "ROBOT_VELOCITY_CMD", on_velocity_msg, self);
-    ripl_robot_status_t_subscribe (self->lcm, "ROBOT_STATUS", on_robot_status, self);
+    rslcm_robot_status_t_subscribe (self->lcm, "ROBOT_STATUS", on_robot_status, self);
 
     return &self->renderer;
 }
